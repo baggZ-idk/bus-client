@@ -20,7 +20,7 @@ Great question. The modding community used to be about **sharing, learning, and 
 By making this menu open-source, I'm giving **everyone** the opportunity to:  
 - Learn how mod menus work 
 - Experiment with new ideas  
-- Contribute to the Gorilla Tag modding scene  
+- Contribute to the Gorilla Tag copy modding scene  
 - ⭐ **Keep modding free and accessible**  
 
 Let's bring back the collaboration of modding. No paywalls, no secrets, no malware, just good mods.  
