@@ -357,17 +357,20 @@ void InitCategories() {
                 }
             }},
             {"Noclip", true, false, []() {
-                bool input;
-                Array<Object*>* meshcollids = GameObject::FindObjectsOfType(MeshCollider::GetType());
-                static Class meshcollider = Class("UnityEngine", "MeshCollider");
-                static Property<bool> e = meshcollider.GetProperty("enabled");
+                auto *leftHand = reinterpret_cast<Rigidbody *>(GameObject::Find("LeftHand Controller")->GetComponent(Rigidbody::GetType()));
+                auto *rightHand = reinterpret_cast<Rigidbody *>(GameObject::Find("RightHand Controller")->GetComponent(Rigidbody::GetType()));
+                auto *body = reinterpret_cast<Rigidbody *>(GameObject::Find("GorillaPlayer")->GetComponent(Rigidbody::GetType()));
 
-                if (XRInput::GetBoolFeature(BoolFeature::TriggerButton, Controller::Left) != input) {
-                    for (auto i: meshcollids->ToVector()) {
-                        e[i] = !XRInput::GetBoolFeature(BoolFeature::TriggerButton, Controller::Left);
-                    }
+                if (XRInput::GetBoolFeature(BoolFeature::SecondaryButton, Controller::Right)) {
+                    leftHand->SetDetectCollisions(false);
+                    body->SetDetectCollisions(false);
+                    rightHand->SetDetectCollisions(false);
                 }
-                input = XRInput::GetBoolFeature(BoolFeature::TriggerButton, Controller::Left);
+                else {
+                    leftHand->SetDetectCollisions(true);
+                    body->SetDetectCollisions(true);
+                    rightHand->SetDetectCollisions(true);
+                }
             }},
             {"Zero Gravity", false, false, []() {
                 Component* gP = GameObject::Find("GorillaPlayer")->GetComponent(Rigidbody::GetType());
@@ -769,8 +772,8 @@ void UpdateToggleStuff() {
 void UpdateFPS() {
     fps = 1.0f / Time::GetUnscaledDeltaTime();
 }
-// discord.gg/busclient
 
+// discord.gg/busclient
 void MotdAndCOC() {
     Color pink = Color(1.0f, 0.4f, 0.8f, 1.0f);
     Color white = Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -810,6 +813,7 @@ void MotdAndCOC() {
         }
     }
 }
+
 // discord.gg/busclient
 void (*Update)(void*);
 void new_Update(void* instance) {
@@ -817,7 +821,6 @@ void new_Update(void* instance) {
     Update(instance);
     UpdateFPS();
     UpdateToggleStuff();
-    static bool gripDown;
     static bool gravityToggled = false;
     static bool flying = false;
     static int btnCooldown = 0;
@@ -827,13 +830,7 @@ void new_Update(void* instance) {
         maxJumpSpeed = GorillaLocomotion::Player::get_Instance()->GetMaxJumpSpeed();
     }
 // discord.gg/busclient
-    float grip = XRInput::GetBoolFeature(BoolFeature::SecondaryButton, Controller::Left);
-    if (grip) {
-        gripDown = true;
-    }
-    else {
-        gripDown = false;
-    }
+    static bool gripDown = XRInput::GetBoolFeature(BoolFeature::SecondaryButton, Controller::Left);
 
     if (gripDown && menu == nullptr) {
         InitCategories();
