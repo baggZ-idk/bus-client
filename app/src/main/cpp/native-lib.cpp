@@ -102,7 +102,6 @@
 #include "GUIManager.hpp"
 #include "PhotonResolve.hpp"
 
-
 #define O(str) BNM_OBFUSCATE(str)
 
 VRRig vrrrig;
@@ -821,6 +820,7 @@ void new_Update(void* instance) {
     Update(instance);
     UpdateFPS();
     UpdateToggleStuff();
+    static bool gripDown;
     static bool gravityToggled = false;
     static bool flying = false;
     static int btnCooldown = 0;
@@ -830,7 +830,13 @@ void new_Update(void* instance) {
         maxJumpSpeed = GorillaLocomotion::Player::get_Instance()->GetMaxJumpSpeed();
     }
 // discord.gg/busclient
-    static bool gripDown = XRInput::GetBoolFeature(BoolFeature::SecondaryButton, Controller::Left);
+    float grip = XRInput::GetBoolFeature(BoolFeature::SecondaryButton, Controller::Left);
+    if (grip) {
+        gripDown = true;
+    }
+    else {
+        gripDown = false;
+    }
 
     if (gripDown && menu == nullptr) {
         InitCategories();
